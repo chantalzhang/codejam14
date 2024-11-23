@@ -3,7 +3,7 @@ import time
 
 # Open serial connection
 ser = serial.Serial('COM3', 9600, timeout=1)
-time.sleep(2)  # Allow time for connection to establish
+time.sleep(2)  # Allow time for connection to establish and stabilize before sending commands
 
 def forward(duration):
     """Send forward command"""

@@ -8,7 +8,7 @@ int motor4pin1 = 8; // Motor 4 direction control
 int motor4pin2 = 9; 
 
 unsigned long obstacleStartTime = 0;
-const int OBSTACLE_THRESHOLD_MS = 100;  // Time in milliseconds to confirm obstacle
+const int OBSTACLE_THRESHOLD_MS = 100;  // Time in milliseconds to confirm obstacle before stopping motors 
 bool isObstacleDetected = false;
 
 void setup() {

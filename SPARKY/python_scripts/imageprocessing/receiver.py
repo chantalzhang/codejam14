@@ -5,10 +5,11 @@ from ultralytics import YOLO
 import time
 
 
+
 #receives video stream from sender on ports (COM6 from virtual serial port driver in our case)
 
 # Configuration for video feed
-port = "COM6"  # Replace with the matching virtual serial port
+port = "COM6"  
 baud_rate = 115200
 width = 320  # Must match the sender's settings
 height = 240
@@ -20,8 +21,29 @@ SIGNAL_BAUD = 9600    # Can be adjusted based on needs
 last_signal_time = 0
 SIGNAL_COOLDOWN = 1.0  # Minimum seconds between signals
 
-# Load YOLO model
+# Load pretrained YOLO model
 model = YOLO('yolov8n.pt')
+
+# Function to detect available camera(s)
+def check_camera():
+    print("Checking for available cameras...")
+    for i in range(10):  # Check up to 10 possible camera indices
+        cap = cv2.VideoCapture(i)
+        if cap.isOpened():
+            print(f"Camera found at index {i}")
+            cap.release()
+            return i  # Return the first available camera index
+    print("No cameras detected. Exiting...")
+    exit(1)  # Exit the script if no cameras are found
+
+# Get the first available camera index
+camera_index = check_camera()
+
+# Open the camera
+cap = cv2.VideoCapture(camera_index)
+if not cap.isOpened():
+    print("Error: Unable to open the camera.")
+    exit(1)
 
 # Open Serial connections
 ser = serial.Serial(port, baud_rate, timeout=1)
@@ -73,7 +95,51 @@ def detect_phones_yolo(frame):
     
     return frame
 
-def decode_rgb565_to_bgr(raw_data, width, height):
+def detect_cats_yolo(frame): 
+    """
+    Detect cats using YOLO and draw bounding boxes.
+    Returns the frame and whether a cat was detected.
+    """
+    global last_signal_time
+    current_time = time.time()
+    
+    cat_detected = False
+    results = model(frame)
+    
+    for result in results:
+        boxes = result.boxes
+        for box in boxes:
+            if box.cls == 17:  # Cat class in COCO dataset
+                cat_detected = True
+                x1, y1, x2, y2 = box.xyxy[0]
+                cv2.rectangle(frame, 
+                              (int(x1), int(y1)), 
+                              (int(x2), int(y2)), 
+                              (255, 0, 0), 2)  # Blue bounding box for cats
+                cv2.putText(frame, 
+                            f'Cat {box.conf[0]:.2f}', 
+                            (int(x1), int(y1)-10), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 
+                            0.9, 
+                            (255, 0, 0), 
+                            2)
+    
+    # Send signal if cat detected and cooldown has elapsed
+    if cat_detected and signal_ser is not None:
+        if current_time - last_signal_time >= SIGNAL_COOLDOWN:
+            try:
+                signal_ser.write(b'2')  # Different signal for cat
+                print("Cat detected - Signal sent!")
+                last_signal_time = current_time
+            except:
+                print("Failed to send signal")
+    
+    return frame
+
+
+
+# Converts raw video data (RBG565) to BGR format for OpenCV
+def decode_rgb565_to_bgr(raw_data, width, height): 
     """
     Convert RGB565 raw data to BGR format for OpenCV and apply fixed shift.
     """

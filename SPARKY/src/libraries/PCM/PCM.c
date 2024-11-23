@@ -64,9 +64,9 @@
  * sox audiodump.wav -c 1 -r 8000 -u -b macstartup-8000.wav
  */
 
-int speakerPin = 11;
-unsigned char const *sounddata_data=0;
-int sounddata_length=0;
+int speakerPin = 11; //pin for speaker output 
+unsigned char const *sounddata_data=0; //pointer to PCM audio data stored in PROGMEM
+int sounddata_length=0; // number of audio files 
 volatile uint16_t sample;
 byte lastSample;
 
