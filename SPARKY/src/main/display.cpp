@@ -1,8 +1,8 @@
-#include "displayControl.h"
+#include "display.h"
 #include <Arduino.h>
 
 // Example display variable
-int displayValue = 0;
+extern int displayValue = 0;
 
 void initializeDisplay() {
     Serial.println("Initializing display...");
