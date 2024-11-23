@@ -42,14 +42,7 @@ def stop():
 # Test sequence
 try:
     print("Starting test sequence...")
-    forward(0.5)
-    stop()
-    backward(0.5)
-    stop()
-    turn_left(3)
-    stop()
-    turn_right(3)
-    stop()
+    forward(5)
 except Exception as e:
     print(f"Error: {e}")
 finally:
