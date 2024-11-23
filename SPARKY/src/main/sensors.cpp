@@ -2,11 +2,11 @@
 #include <Arduino.h>
 
 // Pin definitions
-const int echoPin = 10;
-const int trigPin = 11;
+extern const int echoPin = 10;
+extern const int trigPin = 11;
 
 // Initialize the ultrasonic sensor
-void initializeSensor() {
+void initializeSensors() {
     pinMode(echoPin, INPUT);
     pinMode(trigPin, OUTPUT); // Set trigPin as output
     Serial.begin(9600);      // Start serial communication

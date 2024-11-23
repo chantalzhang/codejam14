@@ -6,7 +6,7 @@ extern const int echoPin;
 extern const int trigPin;
 
 // Function declarations
-void initializeSensor();
+void initializeSensors();
 long measureDistanceInInches();
 long measureDistanceInCM();
 

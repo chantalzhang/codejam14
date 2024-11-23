@@ -1,14 +1,14 @@
 #include "motors.h"
 #include <Arduino.h>
 
-extern int motor1pin1 = 2; // Motor 1 direction control
-extern int motor1pin2 = 3; 
-extern int motor2pin1 = 4; // Motor 2 direction control
-extern int motor2pin2 = 5;
-extern int motor3pin1 = 6; // Motor 3 direction control
-extern int motor3pin2 = 7; 
-extern int motor4pin1 = 8; // Motor 4 direction control
-extern int motor4pin2 = 9; 
+extern const int motor1pin1 = 2; // Motor 1 direction control
+extern const int motor1pin2 = 3; 
+extern const int motor2pin1 = 4; // Motor 2 direction control
+extern const int motor2pin2 = 5;
+extern const int motor3pin1 = 6; // Motor 3 direction control
+extern const int motor3pin2 = 7; 
+extern const int motor4pin1 = 8; // Motor 4 direction control
+extern const int motor4pin2 = 9; 
 
 
 void initializeMotors() {

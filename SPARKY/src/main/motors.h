@@ -13,7 +13,10 @@ extern const int motor4pin2;
 
 // Function declarations
 void initializeMotors();
-void moveMotorsForward();
-void moveMotorsBackward();
+void forward();
+void backward();
+void turn_right();
+void turn_left();
+void stop();
 
 #endif
