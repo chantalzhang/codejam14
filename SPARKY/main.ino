@@ -19,9 +19,35 @@ void loop() {
     Serial.print(cm);
     Serial.println(" cm");
 
+    if (Serial.available() > 0) {
+        char command = Serial.read();
+        
+        // Debug output
+        Serial.print("Command received: ");
+        Serial.print(command);
+        
+        switch (command) {
+            case 'F':
+                forward();
+                break;
+            case 'B':
+                backward();
+                break;
+            case 'S':
+                stop();
+                break;
+            case 'L':
+                turn_left();
+                break;
+            case 'R':
+                turn_right();
+                break;
+        }
+    }
+
     delay(1000); // Delay before the next measurement
-    moveMotorsForward();
-    moveMotorsBackward();
+    forward();
+    backward();
     updateDisplay();
     delay(500); // Add delay for readability
 }

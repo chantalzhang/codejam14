@@ -17,34 +17,102 @@ void setup() {
   pinMode(motor3pin2, OUTPUT);
   pinMode(motor4pin1, OUTPUT);
   pinMode(motor4pin2, OUTPUT);
+  
+  // Initialize serial communication
+  Serial.begin(9600);
 }
 
-void loop() {
-  // Move motors forward
-  digitalWrite(motor1pin1, HIGH);
-  digitalWrite(motor1pin2, LOW);
+void forward() {
+      digitalWrite(motor1pin1, HIGH);
+      digitalWrite(motor1pin2, LOW);
 
-  digitalWrite(motor2pin1, HIGH);
-  digitalWrite(motor2pin2, LOW);
+      digitalWrite(motor2pin1, LOW);
+      digitalWrite(motor2pin2, HIGH);
 
-  digitalWrite(motor3pin1, HIGH);
-  digitalWrite(motor3pin2, LOW);
+      digitalWrite(motor3pin1, HIGH);
+      digitalWrite(motor3pin2, LOW);
 
-  digitalWrite(motor4pin1, HIGH);
-  digitalWrite(motor4pin2, LOW);
-  delay(1000);
+      digitalWrite(motor4pin1, LOW);
+      digitalWrite(motor4pin2, HIGH);
+}
 
-  // Move motors backward
+void backward() {
+      digitalWrite(motor1pin1, LOW);
+      digitalWrite(motor1pin2, HIGH);
+
+      digitalWrite(motor2pin1, HIGH);
+      digitalWrite(motor2pin2, LOW);
+
+      digitalWrite(motor3pin1, LOW);
+      digitalWrite(motor3pin2, HIGH);
+
+      digitalWrite(motor4pin1, HIGH);
+      digitalWrite(motor4pin2, LOW);
+}
+
+void turn_right() {
+      digitalWrite(motor1pin1, LOW);
+      digitalWrite(motor1pin2, HIGH);
+
+      digitalWrite(motor2pin1, LOW);
+      digitalWrite(motor2pin2, HIGH);
+
+      digitalWrite(motor3pin1, LOW);
+      digitalWrite(motor3pin2, HIGH);
+
+      digitalWrite(motor4pin1, LOW);
+      digitalWrite(motor4pin2, HIGH);
+}
+void turn_left() {
+      digitalWrite(motor1pin1, HIGH);
+      digitalWrite(motor1pin2, LOW);
+
+      digitalWrite(motor2pin1, HIGH);
+      digitalWrite(motor2pin2, LOW);
+
+      digitalWrite(motor3pin1, HIGH);
+      digitalWrite(motor3pin2, LOW);
+
+      digitalWrite(motor4pin1, HIGH);
+      digitalWrite(motor4pin2, LOW);
+}
+
+void stop() {
   digitalWrite(motor1pin1, LOW);
-  digitalWrite(motor1pin2, HIGH);
-
+  digitalWrite(motor1pin2, LOW);
   digitalWrite(motor2pin1, LOW);
-  digitalWrite(motor2pin2, HIGH);
-
+  digitalWrite(motor2pin2, LOW);
   digitalWrite(motor3pin1, LOW);
-  digitalWrite(motor3pin2, HIGH);
-
+  digitalWrite(motor3pin2, LOW);
   digitalWrite(motor4pin1, LOW);
-  digitalWrite(motor4pin2, HIGH);
-  delay(1000);
+  digitalWrite(motor4pin2, LOW);
+}
+
+
+void loop() {
+    if (Serial.available() > 0) {
+        char command = Serial.read();
+        
+        // Debug output
+        Serial.print("Command received: ");
+        Serial.print(command);
+        
+        switch (command) {
+            case 'F':
+                forward();
+                break;
+            case 'B':
+                backward();
+                break;
+            case 'S':
+                stop();
+                break;
+            case 'L':
+                turn_left();
+                break;
+            case 'R':
+                turn_right();
+                break;
+        }
+    }
 }
