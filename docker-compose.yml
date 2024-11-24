@@ -1,0 +1,17 @@
+version: '3.9'
+services:
+  ros_sparky:
+    image: ros_sparky  # The name of the image you built
+    container_name: ros_sparky_container
+    build:
+      context: .       # Use current directory as build context
+      dockerfile: Docker/ros_sparky/Dockerfile  # Specify Dockerfile location
+    volumes:
+      - ./catkin_ws:/catkin_ws  # Mount the local catkin_ws to the container
+    ports:
+      - "11311:11311"          # ROS master port
+    environment:
+      - ROS_MASTER_URI=http://localhost:11311
+      - ROS_IP=127.0.0.1
+    tty: true                  # Keep the container running
+    stdin_open: true           # Allow interactive ROS operations

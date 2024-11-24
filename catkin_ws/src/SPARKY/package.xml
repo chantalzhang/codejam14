@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>SPARKY</name>
+  <version>0.0.1</version>
+  <description>The SPARKY robot package</description>
+
+  <maintainer email="your_email@example.com">Your Name</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+</package>

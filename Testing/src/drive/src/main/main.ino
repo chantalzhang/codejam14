@@ -7,9 +7,6 @@ int motor3pin2 = 7;
 int motor4pin1 = 8; // Motor 4 direction control
 int motor4pin2 = 9; 
 
-unsigned long obstacleStartTime = 0;
-const int OBSTACLE_THRESHOLD_MS = 100;  // Time in milliseconds to confirm obstacle before stopping motors 
-bool isObstacleDetected = false;
 
 void setup() {
   pinMode(motor1pin1, OUTPUT);
@@ -117,22 +114,5 @@ void loop() {
                 turn_right();
                 break;
         }
-    }
-    
-    // Check distance
-    long inches = measureDistance();
-    
-    if (inches < 10) {
-        if (!isObstacleDetected) {
-            // First time detecting obstacle
-            obstacleStartTime = millis();
-            isObstacleDetected = true;
-        } else if ((millis() - obstacleStartTime) >= OBSTACLE_THRESHOLD_MS) {
-            // Obstacle has been detected consistently for the threshold time
-            stop();
-        }
-    } else {
-        // No obstacle detected, reset the flag
-        isObstacleDetected = false;
     }
 }

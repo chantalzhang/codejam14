@@ -58,7 +58,7 @@ playingSong = False
 #receives video stream from sender on ports (COM6 from virtual serial port driver in our case)
 
 # Configuration for video feed
-port = "COM6"  # Replace with the matching virtual serial port
+port = "COM6"  
 baud_rate = 115200
 width = 320  # Must match the sender's settings
 height = 240
@@ -73,6 +73,27 @@ NO_PHONE_SIGNAL_COOLDOWN = 1.0  # Longer cooldown when no phone detected
 
 # Load YOLO model
 model = YOLO('yolov8n.pt', verbose=False)
+
+# Function to detect available camera(s)
+def check_camera():
+    print("Checking for available cameras...")
+    for i in range(10):  # Check up to 10 possible camera indices
+        cap = cv2.VideoCapture(i)
+        if cap.isOpened():
+            print(f"Camera found at index {i}")
+            cap.release()
+            return i  # Return the first available camera index
+    print("No cameras detected. Exiting...")
+    exit(1)  # Exit the script if no cameras are found
+
+# Get the first available camera index
+camera_index = check_camera()
+
+# Open the camera
+cap = cv2.VideoCapture(camera_index)
+if not cap.isOpened():
+    print("Error: Unable to open the camera.")
+    exit(1)
 
 # Open Serial connections
 ser = serial.Serial(port, baud_rate, timeout=1)
