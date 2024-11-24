@@ -22,7 +22,7 @@ void initializeMotors() {
   pinMode(motor4pin2, OUTPUT);
 }
 
-void forward() {
+void backward() {
       digitalWrite(motor1pin1, HIGH);
       digitalWrite(motor1pin2, LOW);
 
@@ -36,7 +36,7 @@ void forward() {
       digitalWrite(motor4pin2, HIGH);
 }
 
-void backward() {
+void forward() {
       digitalWrite(motor1pin1, LOW);
       digitalWrite(motor1pin2, HIGH);
 
@@ -50,7 +50,7 @@ void backward() {
       digitalWrite(motor4pin2, LOW);
 }
 
-void turn_right() {
+void turn_left() {
       digitalWrite(motor1pin1, LOW);
       digitalWrite(motor1pin2, HIGH);
 
@@ -63,7 +63,7 @@ void turn_right() {
       digitalWrite(motor4pin1, LOW);
       digitalWrite(motor4pin2, HIGH);
 }
-void turn_left() {
+void turn_right() {
       digitalWrite(motor1pin1, HIGH);
       digitalWrite(motor1pin2, LOW);
 

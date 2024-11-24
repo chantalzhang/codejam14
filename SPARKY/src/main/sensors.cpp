@@ -9,7 +9,6 @@ extern const int trigPin = 11;
 void initializeSensors() {
     pinMode(echoPin, INPUT);
     pinMode(trigPin, OUTPUT); // Set trigPin as output
-    Serial.begin(9600);      // Start serial communication
 }
 
 // Measure distance in inches

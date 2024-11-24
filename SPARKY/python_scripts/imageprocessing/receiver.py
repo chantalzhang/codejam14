@@ -3,7 +3,57 @@ import numpy as np
 import cv2
 from ultralytics import YOLO
 import time
+from playsound import playsound
+import random
+import threading
+import os
 
+# Get the absolute path to the audio directory
+current_dir = os.path.dirname(os.path.abspath(__file__))
+audio_dir = os.path.join(current_dir, "audio")
+
+
+def play_audio_loop():
+    """Continuously play all audio files in random order while playback is active."""
+    global playingSong
+    while playingSong:
+        shuffled_audio_files = audio_files[:]
+        random.shuffle(shuffled_audio_files)
+        for audio in shuffled_audio_files:
+            if not playingSong:  # Stop immediately if playback is deactivated
+                break
+            try:
+                playsound(audio)
+            except Exception as e:
+                print(f"Warning: Failed to play audio file {audio}: {str(e)}")
+
+def stop_audio():
+    """Stop audio playback."""
+    global playingSong, playback_thread
+    if playingSong:
+        playingSong = False
+        if playback_thread:
+            playback_thread.join()
+
+def start_audio():
+    """Start audio playback in a separate thread."""
+    global playback_thread, playingSong
+    if not playingSong:
+        playingSong = True
+        playback_thread = threading.Thread(target=play_audio_loop)
+        playback_thread.start()
+
+# List of audio files
+audio_files = [
+    os.path.join(audio_dir, "n_aggressive.mp3"),
+    os.path.join(audio_dir, "n_sparky.mp3"),
+    os.path.join(audio_dir, "n_get_off_phone.mp3"),
+    os.path.join(audio_dir, "n_meow.mp3")
+]
+
+# Globals for controlling playback
+playback_thread = None
+playingSong = False
 
 #receives video stream from sender on ports (COM6 from virtual serial port driver in our case)
 
@@ -15,13 +65,14 @@ height = 240
 frame_size = width * height * 2  # RGB565 (2 bytes per pixel)
 
 # Configuration for signaling port
-SIGNAL_PORT = "COM7"  # Configure this later
+SIGNAL_PORT = "COM4"  # Configure this later
 SIGNAL_BAUD = 9600    # Can be adjusted based on needs
 last_signal_time = 0
-SIGNAL_COOLDOWN = 1.0  # Minimum seconds between signals
+PHONE_SIGNAL_COOLDOWN = 0.2  # More frequent updates when phone detected
+NO_PHONE_SIGNAL_COOLDOWN = 1.0  # Longer cooldown when no phone detected
 
 # Load YOLO model
-model = YOLO('yolov8n.pt')
+model = YOLO('yolov8n.pt', verbose=False)
 
 # Open Serial connections
 ser = serial.Serial(port, baud_rate, timeout=1)
@@ -41,7 +92,7 @@ def detect_phones_yolo(frame):
     current_time = time.time()
     
     phone_detected = False
-    results = model(frame)
+    results = model(frame, verbose=False)
     
     for result in results:
         boxes = result.boxes
@@ -61,15 +112,30 @@ def detect_phones_yolo(frame):
                           (0, 255, 0), 
                           2)
     
-    # Send signal if phone detected and cooldown has elapsed
-    if phone_detected and signal_ser is not None:
-        if current_time - last_signal_time >= SIGNAL_COOLDOWN:
+    # Handle audio based on phone detection
+    if phone_detected:
+        start_audio()  # Start playing audio when phone detected
+        print("-" * 40)
+        print(f"Phone detected!")
+    else:
+        stop_audio()   # Stop playing audio when no phone detected
+        print("-" * 40)
+        print(f"No phone detected")
+    
+    # Only attempt serial communication if connection exists
+    if signal_ser is not None:
+        cooldown = PHONE_SIGNAL_COOLDOWN if phone_detected else NO_PHONE_SIGNAL_COOLDOWN
+        if current_time - last_signal_time >= cooldown:
             try:
-                signal_ser.write(b'1')
-                print("Phone detected - Signal sent!")
+                if phone_detected:
+                    signal_ser.write(b'P\n')
+                    print(f"Signal 'P' sent to {SIGNAL_PORT}")
+                else:
+                    signal_ser.write(b'N\n')
+                    print(f"Signal 'N' sent to {SIGNAL_PORT}")
                 last_signal_time = current_time
-            except:
-                print("Failed to send signal")
+            except Exception as e:
+                print(f"Failed to send signal: {str(e)}")
     
     return frame
 
@@ -122,3 +188,7 @@ finally:
     if signal_ser is not None:
         signal_ser.close()
     cv2.destroyAllWindows()
+
+
+
+
