@@ -17,7 +17,14 @@ def play_audio_loop():
     """Continuously play all audio files in random order while playback is active."""
     global playingSong
     while playingSong:
-        shuffled_audio_files = audio_files[:]
+        # Play the first song (hard-coded to "small.mp3")
+        try:
+            playsound(os.path.join(audio_dir, "small.mp3"))
+        except Exception as e:
+            print(f"Warning: Failed to play first audio file: {str(e)}")
+            
+        # Then shuffle and play the remaining songs
+        shuffled_audio_files = audio_files[1:]  # Skip the first song
         random.shuffle(shuffled_audio_files)
         for audio in shuffled_audio_files:
             if not playingSong:  # Stop immediately if playback is deactivated
@@ -45,10 +52,15 @@ def start_audio():
 
 # List of audio files
 audio_files = [
+    os.path.join(audio_dir, "small.mp3"),
     os.path.join(audio_dir, "n_aggressive.mp3"),
-    os.path.join(audio_dir, "n_sparky.mp3"),
     os.path.join(audio_dir, "n_get_off_phone.mp3"),
-    os.path.join(audio_dir, "n_meow.mp3")
+    os.path.join(audio_dir, "big.mp3"),
+    os.path.join(audio_dir, "fast.mp3"),
+    os.path.join(audio_dir, "high-pitch.mp3"),
+    os.path.join(audio_dir, "howl.mp3"),
+    os.path.join(audio_dir, "raspy.mp3"),
+    os.path.join(audio_dir, "slow.mp3"),
 ]
 
 # Globals for controlling playback
